@@ -124,7 +124,6 @@ class Parser
             assert($this->node instanceof NumberNode);
 
             $this->node->addChar($this->curr->getValue());
-            return;
         }
     }
 
