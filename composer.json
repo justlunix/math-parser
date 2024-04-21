@@ -1,0 +1,18 @@
+{
+    "name": "justlunix/math-parser",
+    "description": "Evaluate mathematical expressions from strings",
+    "autoload": {
+        "psr-4": {
+            "Lunix\\MathParser\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Luca Kermas",
+            "email": "lunix@luca-kermas.de"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    }
+}
