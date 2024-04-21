@@ -3,6 +3,8 @@
 namespace Lunix\MathParser\Parser;
 
 use Exception;
+use Lunix\MathParser\Parser\Node\ChildrenNode;
+use Lunix\MathParser\Parser\Node\MainNode;
 use Lunix\MathParser\Parser\Node\Node;
 use Lunix\MathParser\Parser\Node\NumberNode;
 use Lunix\MathParser\Parser\Node\OperatorNode;
@@ -16,13 +18,18 @@ class Parser
     private ?Token $last = null;
     private Token $curr;
 
-    private array $nodes;
+    /**
+     * @var ChildrenNode[]
+     */
+    private array $stack;
+
     private ?Node $node = null;
 
     public function __construct(
         private readonly array $tokens
     )
     {
+        $this->stack[] = new MainNode();
     }
 
     private function receive(): bool
@@ -54,17 +61,23 @@ class Parser
             match ($this->curr->getType()) {
                 TokenTypeEnum::NUMBER => $this->parseNumber(),
                 TokenTypeEnum::OPERATOR => $this->parseOperator(),
+                TokenTypeEnum::LPAREN => $this->parseLParen(),
+                TokenTypeEnum::RPAREN => $this->parseRParen(),
             };
         }
 
         $this->push();
 
-        return $this->nodes;
+        return $this->stack;
     }
 
     private function push(): void
     {
-        $this->nodes[] = $this->node;
+        if (! isset($this->node)) {
+            return;
+        }
+
+        $this->stack[0]?->addChild($this->node);
         $this->node = null;
     }
 
@@ -85,6 +98,14 @@ class Parser
             ],
             TokenTypeEnum::OPERATOR => [
                 TokenTypeEnum::NUMBER,
+                TokenTypeEnum::LPAREN,
+            ],
+            TokenTypeEnum::LPAREN => [
+                TokenTypeEnum::NUMBER,
+            ],
+            TokenTypeEnum::RPAREN => [
+                TokenTypeEnum::OPERATOR,
+                TokenTypeEnum::RPAREN,
             ]
         });
     }
@@ -112,5 +133,21 @@ class Parser
         $this->push();
 
         $this->node = new OperatorNode($this->curr->getValue());
+    }
+
+    public function parseLParen(): void
+    {
+        $this->push();
+
+        array_unshift($this->stack, new ChildrenNode());
+    }
+
+    public function parseRParen(): void
+    {
+        $this->push();
+
+        $node = array_shift($this->stack);
+
+        $this->stack[0]?->addChild($node);
     }
 }

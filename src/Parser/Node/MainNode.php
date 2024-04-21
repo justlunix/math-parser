@@ -2,6 +2,6 @@
 
 namespace Lunix\MathParser\Parser\Node;
 
-class OperatorNode extends ValueNode
+class MainNode extends ChildrenNode
 {
 }
