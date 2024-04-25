@@ -9,4 +9,9 @@ class ValueNode extends Node
     )
     {
     }
+
+    public function getValue(): string
+    {
+        return $this->value;
+    }
 }

@@ -14,9 +14,18 @@ class Tokenizer
 
     public function tokenize(): array
     {
+        /** @var Token[] $tokens */
         $tokens = [];
 
         while ($token = $this->consume()) {
+            $last = end($tokens) ?: null;
+
+            if ($token->getType() === TokenTypeEnum::NUMBER && $last?->getType() === TokenTypeEnum::NUMBER) {
+                array_pop($tokens);
+
+                $token = new Token(TokenTypeEnum::NUMBER, "{$last->getValue()}{$token->getValue()}");
+            }
+
             $tokens[] = $token;
         }
 
