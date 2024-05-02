@@ -44,7 +44,7 @@ class Tokenizer
             return new Token(TokenTypeEnum::NUMBER, $char);
         }
 
-        if (in_array($char, ['+', '-', '*', '/'])) {
+        if (in_array($char, ['+', '-', '*', '/', '^'])) {
             return new Token(TokenTypeEnum::OPERATOR, $char);
         }
 
