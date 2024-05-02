@@ -6,7 +6,7 @@ class Token
 {
     public function __construct(
         private TokenTypeEnum $type,
-        private string        $value,
+        private string $value,
     )
     {
     }

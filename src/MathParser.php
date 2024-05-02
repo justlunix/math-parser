@@ -2,7 +2,9 @@
 
 namespace Lunix\MathParser;
 
-use Lunix\MathParser\Parser\Parser;
+use Exception;
+use Lunix\MathParser\Evaluator\ShuntingYardEvaluator;
+use Lunix\MathParser\Parser\ShuntingYardParser;
 use Lunix\MathParser\Tokenizer\Tokenizer;
 
 class MathParser
@@ -11,18 +13,25 @@ class MathParser
     private readonly array $tokens;
 
     public function __construct(
-        private readonly CalculationTypeEnum $calculationType,
-        private readonly string              $expression,
+        private readonly string $expression,
     )
     {
         $this->tokenizer = new Tokenizer($this->expression);
         $this->tokens = $this->tokenizer->tokenize();
     }
 
+    /**
+     * @throws Exception
+     */
     public function evaluate(): string|float
     {
-        $parser = new Parser($this->tokens);
+        $tokenizer = new Tokenizer($this->expression);
+        $tokens = $tokenizer->tokenize();
 
-        return "";
+        $parser = new ShuntingYardParser($tokens);
+        $shuntingYard = $parser->parse();
+
+        $evaluator = new ShuntingYardEvaluator($shuntingYard);
+        return $evaluator->evaluate();
     }
 }

@@ -4,12 +4,12 @@ namespace Lunix\MathParser\Tokenizer;
 
 class Tokenizer
 {
-    private string $expression;
     private int $position = 0;
 
-    public function __construct(string $expression)
+    public function __construct(
+        private readonly string $expression,
+    )
     {
-        $this->expression = $expression;
     }
 
     public function tokenize(): array

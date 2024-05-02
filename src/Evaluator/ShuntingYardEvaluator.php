@@ -18,7 +18,7 @@ class ShuntingYardEvaluator
      * @param Token[] $tokens
      */
     public function __construct(
-        private readonly array $tokens
+        private readonly array $tokens,
     )
     {
     }
